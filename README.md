@@ -1,4 +1,4 @@
-## Laravel PHP Framework project guide
+### Laravel PHP Framework project guide
 ===
 
 【安装laravel】
@@ -36,7 +36,7 @@
           
     如果通过composer或laravel安装器安装，这个key已经被 key:generate 命令生成，一般32位长，这个key可以在 .env 文件中设置，
   
-  如果没有把 .env.example 重命名为 .env，需要重命名一下。这个key用来保证会话安全。
+    如果没有把 .env.example 重命名为 .env，需要重命名一下。这个key用来保证会话安全。
 
   3.额外配置：
     
