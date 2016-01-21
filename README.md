@@ -93,20 +93,131 @@
 
 【Eloquent ORM】
 
-    用model生成工具生成，默认生成的文件是在app目录下，但可以指定是在app的哪个目录:
-    `php artisan make:model Models/Member`
+  1.定义模型：
 
-    生成的文件如下：（注意需要额外指定表明和主键id）
+  用model生成工具生成，默认生成的文件是在app目录下，但可以指定是在app的哪个目录:
+
+  `php artisan make:model Models/Member`
+
+  生成的文件如下：
+    
+  ```
+    namespace App\Models;
+
+    use Illuminate\Database\Eloquent\Model;
+
+    class Member extends Model
+    {
+        //
+    }
+  ```
+
+  2.惯例：
+
+    表名：Eloquent假定Member模型在members表中存储记录。所以需要在model里指定私有属性`$table`。  
+
+    主键：Eloquent假定每个表有一个叫id的主键，所以需要定义私有属性`$primaryKey`覆盖这个惯例。  
+
+    时间戳：默认，Eloquent预计表中有 `created_at` 和`updated_at`，  
+    如果不想让Eloquent自动管理这些字段，设置model内的私有属性`$timestamps`为false。  
+    如果需要自定义时间戳的格式，设置私有属性`$dateFormat`，这条属性决定日期属性在数据库中如何存储，`$dateFormat = ‘U’` 表示时间戳。  
+
+    数据库连接：默认所有的Eloquent模型使用应用配置的默认数据库连接。  
+    如果需要为模型指定不同的连接，使用私有属性`$connection`。需要在 config/database.php 配置多个mysql项。  
+
     ```
-      namespace App\Models;
+    namespace App\Models;
 
-      use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Database\Eloquent\Model;
 
-      class Member extends Model
-      {
-          protected $table = 'pre_member’; // 关联数据库表名
-          protected $primaryKey = 'id’; // 数据库主键id
-              
-          //public $timestamps = false; // 数据库时间戳
-      }
+    class Member extends Model
+    {
+        protected $table = ‘my_members';
+        protected $primaryKey = ‘member_id';
+     
+        public $timestamps = false;
+        // protected $dateFormat = ‘U';
+        
+        // protected $connection = ‘mysql2’;
+    }
     ```
+
+  config/database.php
+
+  ```
+  'mysql' => [
+    'driver' => 'mysql',
+    'host' => env('DB_HOST', 'localhost'),
+    'database' => env('DB_DATABASE', 'forge'),
+    'username' => env('DB_USERNAME', 'forge'),
+    'password' => env('DB_PASSWORD', ''),
+    'charset' => 'utf8',
+    'collation' => 'utf8_unicode_ci',
+    'prefix' => '',
+    'strict' => false,
+  ],
+
+  'mysql2' => [
+    'driver' => 'mysql',
+    'host' => 'db.abc.com',
+    'database' => ‘abcdef_dev',
+    'username' => 'admin',
+    'password' => 'admin',
+    'charset' => 'utf8',
+    'collation' => 'utf8_unicode_ci',
+    'prefix' => '',
+    'strict' => false,
+  ],
+  ```
+
+  读/写 分离
+   
+  ``` 
+  'mysql' => [
+    'read' => [
+      'host' => '192.168.1.1',
+    ],
+    'write' => [
+      'host' => '196.168.1.2'
+    ],
+    'driver'    => 'mysql',
+    'database'  => 'database',
+    'username'  => 'root',
+    'password'  => '',
+    'charset'   => 'utf8',
+    'collation' => 'utf8_unicode_ci',
+    'prefix'    => '',
+  ],
+  ```
+  
+  3.索引多个模型
+
+  4.事务
+  自动控制：
+
+  在`Closure`(匿名函数)中检测到异常自动回滚，Closure中执行成功，则自动提交事务：
+  
+  ```
+  DB::transaction(function ( ) {
+      DB::table(‘users’)->update([‘votes’ => 1]);
+
+      DB::table(‘posts’)->delete( );
+  })
+  ```
+
+  手动控制：
+    
+    开始事务， DB::beginTransaction( );
+    
+    回滚，DB::rollBack( );
+    
+    提交，DB::commit( );
+
+
+  5.使用多个数据库连接
+
+    先在 config/database.php 中配置新的连接，然后有两种方式使用
+    > 可以在model中定义
+    > 或者直接写，$users = DB::connection(‘foo’)->select( );
+    
+    
