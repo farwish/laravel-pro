@@ -436,19 +436,18 @@ app/Http/routes.php ( laravel.com/docs/5.2/routing )
   `php artisan route:clear` 清除路由缓存  
 
 【FAQs】  
-  laravel的Filesystem.php第81行报错，storage没有写入权限或需要清除缓存。  
-  chmod -R 777 storage  
-  php artisan cache:clear  
+  laravel的Filesystem.php第81行报错? storage没有写入权限或需要清除缓存。  
+    chmod -R 777 storage  
+    php artisan cache:clear  
 
 
-总结：  
+【总结】  
 * 给storage/ 和 bootstrap/cache 读写权限
 * 重新生成32位APP_KEY
 * php artisam config:cache 生产部署的常规操作
 * laravel/server.php
 * php artisan make:model Models/Member , 生成app/Models/Member.php
 * php artisan make:controller User/MemberController , 生成app/Http/Controllers/User/MemberController.php
-
 * //指定路由到控制器, 使用as或name方法为路由指定一个名字
 * Route::get('member/index', 'User\MemberController@index’)->name('index');
 * Route::get('member/index', ['as' => 'index', 'uses' => 'User\MemberController@index']);
