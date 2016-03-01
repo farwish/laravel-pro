@@ -223,8 +223,8 @@
     
 【路由】  
   
-  app/Http/routes.php  
-  https://laravel.com/docs/5.2/routing  
+app/Http/routes.php  
+https://laravel.com/docs/5.2/routing  
 
   1. 基本路由  
     基础路由简单的接收一个URI和匿名函数.  
@@ -360,71 +360,72 @@
 
 【控制器】  
     
-  用控制器组织行为，代替在 `routes.php` 中定义所有的请求。  
+用控制器组织行为，代替在 `routes.php` 中定义所有的请求。  
     
-  控制器放在 `app/Http/Controller` 目录。  
+控制器放在 `app/Http/Controller` 目录。  
 
-  1. 基本控制器:  
+1. 基本控制器:  
     
-     ```
-          namespace App\Http\Controller
+  ```
+  namespace App\Http\Controller
 
-          use App\User;
-          use App\Http\Controllers\Controller;
+  use App\User;
+  use App\Http\Controllers\Controller;
 
-          class UserController extends Controller
-          {
-               public function showProfile($id)
-               {
-                    return view(‘user.profile’, [‘user’ => User::findOrFail($id)]);
-               }
-          }
-     ```
+  class UserController extends Controller
+  {
+    public function showProfile($id)
+    {
+      return view(‘user.profile’, [‘user’ => User::findOrFail($id)]);
+    }
+  }
+  ```
 
-  2.路由至控制器：`Route::get(‘user/{id}’, ‘UserController@showProfile');`  
-     命名空间`App\Http\Controllers\Photos\AdminController`对应路由： 
+2.路由至控制器：`Route::get(‘user/{id}’, ‘UserController@showProfile');`  
+    
+  命名空间`App\Http\Controllers\Photos\AdminController`对应路由： 
           `Route::get(‘foo’, ‘Photos\AdminController@method');`  
 
-     控制器中间件：  
-          ```
-          Route::get(‘profile’, [
-               ‘middleware’ => ‘auth’,
-               ‘uses’ => ‘UserController@showProfile'
-          ]);
-          ```
+  控制器中间件：  
+  ```
+  Route::get(‘profile’, [
+      'middleware’ => ‘auth’,
+          uses’ => ‘UserController@showProfile'
+      ]);
+  ```
 
-     在控制器中用 `middleware` 方法调用中间件：  
-          ```
-          class UserController extends Controller
-          {
-               public function __construct()
-               {
-                    $this->middleware(‘auth');
+  在控制器中用 `middleware` 方法调用中间件：  
+  ```
+  class UserController extends Controller
+  {
+      public function __construct()
+      {
+          $this->middleware(‘auth');
 
-                    $this->middleware(‘log’, [‘only’ => [
-                         ‘fooAction’,
-                         ‘barAction’,
-                    ] ]);
+          $this->middleware(‘log’, [‘only’ => [
+              ‘fooAction’,
+              ‘barAction’,
+          ] ]);
 
-                    $this->middleware(’subscribed’, [‘except’ => [
-                         ‘fooAction’,
-                         ‘barAction’,
-                    ]]);
-               }
-          }
-          ```
+          $this->middleware(’subscribed’, [‘except’ => [
+              ‘fooAction’,
+              ‘barAction’,
+          ]]);
+      }
+  }
+  ```
 
-     RESTful资源控制器：  
-          `php artisan make:controller PhotoController --resource`  
-          `php artisan make:controller Photo/PhotoController --resource`  
+  RESTful资源控制器：  
+  `php artisan make:controller PhotoController --resource`  
+  `php artisan make:controller Photo/PhotoController --resource`  
 
-          注册路由到控制器  
-          `Route::resource(‘photo’, ‘PhotoController');`  
+  注册路由到控制器  
+  `Route::resource(‘photo’, ‘PhotoController');`  
 
-     路由缓存  
-          `php artisan route:cache` 生成bootstrap/cache/routes.php路由缓存文件  
+  路由缓存  
+  `php artisan route:cache` 生成bootstrap/cache/routes.php路由缓存文件  
 
-          `php artisan route:clear` 清除路由缓存  
+  `php artisan route:clear` 清除路由缓存  
 
 【FAQs】  
 laravel的Filesystem.php第81行报错，storage没有写入权限或需要清除缓存。  
