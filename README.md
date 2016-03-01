@@ -221,3 +221,212 @@
     > 或者直接写，$users = DB::connection(‘foo’)->select( );
     
     
+【路由】  
+  
+  app/Http/routes.php  
+  https://laravel.com/docs/5.2/routing  
+
+  1. 基本路由  
+    基础路由简单的接收一个URI和匿名函数.  
+    默认，routes文件包含一个单独的路由和路由分组，路由分组提供session状态和CSRF保护。  
+
+  ```
+    可用的路由方法：
+      Route::get($uri, $callback);
+      Route::post($uri, $callback);
+      Route::put($uri, $callback);
+      Route::patch($uri, $callback);
+      Route::delete($uri, $callback);
+      Route::options($uri, $callback);
+
+    使用match响应多个HTTP规则，用any响应任何HTTP规则：
+      Route::match([‘get’, ‘post’], ‘/‘, function() {
+      });
+      Route::any(‘foo’, function() {
+      });
+  ```
+
+  路由参数  
+  ```
+    请求的参数：
+     Route::get(‘user/{id}’, function($id) {
+     });
+     Route::get(‘posts/{post}/comments/{comment}’, function($postId, $commentId) {
+     });
+     注意：路由参数不能包含 `-` 字符。使用下划线( `_` )代替。
+
+    可选的参数：
+     使存在的参数可选，在参数名后使用 `?` ，确保给一个默认值
+     Route::get(‘user/{name?}’, function($name = null) {
+          return $name;
+     })
+     Route::get(‘user/{name?}’, function($name = ‘John') {
+          return $name;
+     })
+  ```
+
+  2.有名字的路由  
+  ```
+    使用as作为数组的key为路由指定一个名字：
+     Route::get(‘profile’, [‘as’ => ‘profile’, function() {
+     }]);
+
+    指定路由名到控制器方法：
+     Route::get(‘prifile’, [
+          ‘as’ => ‘profile’, ‘uses’ => ‘UserController@showProfile'
+     ]);
+
+    或者用`name` 方法：
+     Route::get(‘user/profile’, ‘UserController@showProfile’)->name(‘profile');
+  ```
+
+【中间件】  
+
+  提供过滤http请求的机制，所有中间件放在app/Http/Moddleware目录。  
+
+  1.定义中间件：  
+  ```
+    php artisan make:middleware AgeMiddleware, 在生成类的handle中返回请求前加入过滤代码。
+
+    before/after中间件：BeforeMiddleware，AfterMiddleware
+  ```
+
+  2.注册中间件：
+  ```
+    全局中间件：把中间件类列入app/Http/Kernel.php的 `$middleware` 属性中。  
+    分配中间件至路由：追加到app/Http/Kernel.php的 `$routeMiddle` 属性中，并分配一个key。  
+    一旦定义了这个中间件，就可以在路由选项中使用这个key，  
+    
+      Route::get(‘admin/profile’, [‘middleware’ => ‘auth’, function () {
+      }]);
+      
+    用数组分配多个中间件到路由：
+      Route::get(‘/‘, [‘middleware’ => [‘first’, ’second’], function () {
+      }]);
+    
+    不用数组的方式，用middleware方法：
+      Route::get(‘/‘, function () {
+          // ….
+      })->middleware([‘first’, ’second']);
+
+    中间件分组：在 `$middlewareGroups` 中定义, 如下使用
+       Route::group([‘middleware’ => [‘web’]], function () {
+       });
+
+    中间件参数：
+      额外的中间件参数在 `$next` 参数之后，
+        
+          namespace App\Http\Middleware;
+
+          use Closure;
+
+          class RoleMiddleware
+          {
+               public function handle($request, Closure $next, $role)
+               {
+                    if (! $request->user()->hasRole($role)) {
+                         // Redirect
+                    }
+
+                    return $next($request);
+               }
+          }
+
+          中间件名字和参数间用 `:` 分隔
+          Route::put(‘post/{id}’, [‘middleware’ => ‘role:editor’, function ($id) {
+               //
+          }])
+
+     有期限的中间件：
+          在中间件中使用 `terminate` 方法
+          namespace Illuminate\Session\Middleware;
+
+          use Closure;
+
+          class StartSession
+          {
+               public function handle($request, Closure $next)
+               {
+                    return $next($request);
+               }
+
+               public function terminate($request, $response)
+               {
+                    // Store the session data...
+               }
+          }
+          一旦定义了有期限的中间件，需要加入到全局中间件中。
+  ```
+
+【控制器】  
+    
+  用控制器组织行为，代替在 `routes.php` 中定义所有的请求。  
+    
+  控制器放在 `app/Http/Controller` 目录。  
+
+  1. 基本控制器:  
+    
+     ```
+          namespace App\Http\Controller
+
+          use App\User;
+          use App\Http\Controllers\Controller;
+
+          class UserController extends Controller
+          {
+               public function showProfile($id)
+               {
+                    return view(‘user.profile’, [‘user’ => User::findOrFail($id)]);
+               }
+          }
+     ```
+
+  2.路由至控制器：`Route::get(‘user/{id}’, ‘UserController@showProfile');`  
+     命名空间`App\Http\Controllers\Photos\AdminController`对应路由： 
+          `Route::get(‘foo’, ‘Photos\AdminController@method');`  
+
+     控制器中间件：  
+          ```
+          Route::get(‘profile’, [
+               ‘middleware’ => ‘auth’,
+               ‘uses’ => ‘UserController@showProfile'
+          ]);
+          ```
+
+     在控制器中用 `middleware` 方法调用中间件：  
+          ```
+          class UserController extends Controller
+          {
+               public function __construct()
+               {
+                    $this->middleware(‘auth');
+
+                    $this->middleware(‘log’, [‘only’ => [
+                         ‘fooAction’,
+                         ‘barAction’,
+                    ] ]);
+
+                    $this->middleware(’subscribed’, [‘except’ => [
+                         ‘fooAction’,
+                         ‘barAction’,
+                    ]]);
+               }
+          }
+          ```
+
+     RESTful资源控制器：  
+          `php artisan make:controller PhotoController --resource`  
+          `php artisan make:controller Photo/PhotoController --resource`  
+
+          注册路由到控制器  
+          `Route::resource(‘photo’, ‘PhotoController');`  
+
+     路由缓存  
+          `php artisan route:cache` 生成bootstrap/cache/routes.php路由缓存文件  
+
+          `php artisan route:clear` 清除路由缓存  
+
+【FAQs】  
+laravel的Filesystem.php第81行报错，storage没有写入权限或需要清除缓存。  
+chmod -R 777 storage  
+php artisan cache:clear  
