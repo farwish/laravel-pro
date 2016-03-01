@@ -223,11 +223,10 @@
     
 【路由】  
   
-app/Http/routes.php  
-https://laravel.com/docs/5.2/routing  
+app/Http/routes.php ( laravel.com/docs/5.2/routing )
 
-1. 基本路由  
-  
+1.基本路由  
+
 ```
   基础路由简单的接收一个URI和匿名函数.  
   默认，routes文件包含一个单独的路由和路由分组，路由分组提供session状态和CSRF保护。  
@@ -281,11 +280,11 @@ https://laravel.com/docs/5.2/routing
       ‘as’ => ‘profile’, ‘uses’ => ‘UserController@showProfile'
   ]);
   
-  **Route::get('member/abc', ['as' => 'abc', 'uses' => 'User\MemberController@abc']);**
+  Route::get('member/abc', ['as' => 'abc', 'uses' => 'User\MemberController@abc']);
 
 
   或者用`name` 方法：  
-  **Route::get(‘user/profile’, ‘UserController@showProfile’)->name(‘profile');**
+  Route::get(‘user/profile’, ‘UserController@showProfile’)->name(‘profile');
   ```
 
 【中间件】  
