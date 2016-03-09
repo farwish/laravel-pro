@@ -87,9 +87,7 @@ class MemberController extends Controller
 
 		// SQL Queries (见模型中的DB操作)
 
-		/*
 		$res = $Member->show();
-		*/
 
 		/*
 		$data = [$request->url, $request->title];

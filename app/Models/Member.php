@@ -10,8 +10,8 @@ class Member extends Model
 {
 	//use SoftDeletes;
 
-	protected $table = 'sp_sites';
-	protected $primaryKey = 'site_id';
+	protected $table = '59_member';
+	protected $primaryKey = 'uid';
 
 	public $timestamps = false;
 	protected $dateFormat = 'U';
