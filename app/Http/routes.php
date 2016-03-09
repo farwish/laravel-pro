@@ -11,7 +11,16 @@
 |
 */
 
+// 访问 $_SERVER['HTTP_HOST'] 时
 Route::get('/', 'Member\MemberController@index');
+
+// 访问 $_SERVER['HTTP_HOST']/member 时
+Route::get('member', 'Member\MemberController@index');
+
+// 访问 $_SERVER['HTTP_HOST']/admin/member 时
+Route::group(['prefix' => 'admin'], function() {
+	Route::get('member', 'Member\MemberController@index');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +36,5 @@ Route::get('/', 'Member\MemberController@index');
 Route::group(['middleware' => ['web']], function () {
     //
 });
+
+

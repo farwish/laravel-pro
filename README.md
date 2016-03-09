@@ -287,6 +287,20 @@ app/Http/routes.php ( laravel.com/docs/5.2/routing )
   Route::get(‘user/profile’, ‘UserController@showProfile’)->name(‘profile');
   ```
 
+例子:  
+```
+// 访问 $_SERVER['HTTP_HOST'] 时  
+Route::get('/', 'Member\MemberController@index');  
+
+// 访问 $_SERVER['HTTP_HOST']/member 时  
+Route::get('member', 'Member\MemberController@index');  
+
+// 里有分组: 访问 $_SERVER['HTTP_HOST']/admin/member  
+Route::group(['prefix' => 'admin'], function() {  
+	Route::get('member', 'Member\MemberController@index');  
+});  
+```
+
 【中间件】  
 
 提供过滤http请求的机制，所有中间件放在app/Http/Moddleware目录。  
