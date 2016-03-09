@@ -438,7 +438,7 @@ app/Http/routes.php ( laravel.com/docs/5.2/routing )
 【FAQs】  
   laravel的Filesystem.php第81行报错? storage没有写入权限或需要清除缓存。  
     chmod -R 777 storage  
-    chmod -R 777 bootstrap/cache
+    chmod -R 777 bootstrap/cache  
     php artisan cache:clear  
 
 
