@@ -458,9 +458,10 @@ Route::group(['prefix' => 'admin'], function() {
 
 【总结】  
 * 给storage/ 和 bootstrap/cache 读写权限
-* 重新生成32位APP_KEY
-* php artisam config:cache 生产部署的常规操作
-* laravel/server.php
+* cp .env.example .env 并修改数据库配置
+* 重新生成32位APP_KEY：php artisan key:generate
+* (php artisam config:cache 生产部署的常规操作)
+* 访问laravel/public, 可配置虚拟主机, 后面访问的路由主要根据route.php配置, 否则404; 具体见上面路由篇
 * php artisan make:model Models/Member , 生成app/Models/Member.php
 * php artisan make:controller User/MemberController , 生成app/Http/Controllers/User/MemberController.php
 * //指定路由到控制器, 使用as或name方法为路由指定一个名字
