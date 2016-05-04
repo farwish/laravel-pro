@@ -3,7 +3,7 @@
 
 【安装laravel】
 
-  通过composer安装：composer create-project laravel/laravel --prefer-dist
+  通过composer安装：`composer create-project laravel/laravel project-name --prefer-dist`
 
   # 移除Laravel 自带了用户注册和认证的脚手架: `php artisan fresh`
 
